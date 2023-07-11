@@ -1,4 +1,4 @@
-import * as queryString from 'query-string';
+import {parseUrl, stringifyUrl} from 'query-string';
 import type { ParsedQuery, ParsedUrl, StringifyOptions } from 'query-string';
 import type { HttpMethod, RequestBody, SerializerOptions } from './types';
 
@@ -18,7 +18,9 @@ export class RequestContext {
     private httpMethod: HttpMethod,
     private opts: SerializerOptions = {},
   ) {
-    this.url = queryString.parseUrl(url);
+    console.log(parseUrl)
+    debugger;
+    this.url = parseUrl(url);
   }
 
   /**
@@ -43,7 +45,7 @@ export class RequestContext {
           break;
       }
     }
-    return queryString.stringifyUrl(this.url, {
+    return stringifyUrl(this.url, {
       arrayFormat,
       arrayFormatSeparator,
     });
@@ -54,7 +56,7 @@ export class RequestContext {
    *
    */
   public setUrl(url: string): void {
-    this.url = queryString.parseUrl(url);
+    this.url = parseUrl(url);
   }
 
   /**

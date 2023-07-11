@@ -140,7 +140,7 @@ export class Context {
     Object.entries(components).forEach(([type, value]) =>
       Object.entries(value).forEach(([name, spec]) =>
         // @ts-expect-error This[type] is not handled by TS
-        this.addToMap(name, spec, this[type]),
+        this.addToMap((name), spec, this[type]),
       ),
     );
   }

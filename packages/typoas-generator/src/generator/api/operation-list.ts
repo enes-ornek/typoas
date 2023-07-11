@@ -5,7 +5,7 @@ import { Context } from '../../context';
 import { OpenAPIObject, PathItemObject } from 'openapi3-ts/oas31';
 import { FunctionDeclaration } from 'typescript';
 
-const HTTP_METHOD = new Set([
+export const HTTP_METHOD = new Set([
   'get',
   'post',
   'options',

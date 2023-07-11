@@ -2,7 +2,7 @@ import { Context, ContextOptions } from './context';
 import {
   ComponentsObject,
   isSchemaObject,
-  OpenAPIObject,
+  OpenAPIObject, OperationObject, ParameterObject,
 } from 'openapi3-ts/oas31';
 import {
   createPrinter,
@@ -26,9 +26,10 @@ import {
   createAuthMethodsType,
   createConfigureAuthFunction,
 } from './generator/api/security';
-import { createOperationList } from './generator/api/operation-list';
+import {createOperationList, HTTP_METHOD} from './generator/api/operation-list';
 import { createContextFactory } from './generator/api/context-factory';
 import { createAllSchemaTransforms } from './generator/api/schemas-transformers';
+import {camelCase} from "lodash";
 
 export function createSchemaComponents(
   schemas: Exclude<ComponentsObject['schemas'], undefined>,
@@ -59,6 +60,10 @@ export function createSchemaComponents(
   });
 }
 
+function isParameterObject(obj: any): obj is ParameterObject {
+  return Object.prototype.hasOwnProperty.call(obj, 'in');
+}
+
 export function generateClient(
   specs: OpenAPIObject,
   opts?: ContextOptions,
@@ -71,6 +76,25 @@ export function generateClient(
   }
 
   if (specs.components) {
+
+    if (specs.components.schemas) Object.values(specs.components.schemas).filter(isSchemaObject).forEach((v) => {
+      if (v.properties)
+        v.properties = Object.fromEntries(Object.entries(v.properties).map(
+            ([k, v]) => [camelCase(k), v]
+        ))
+    });
+
+    if (specs.paths) Object.values(specs.paths).forEach((path) => {
+      const ops: OperationObject[] = Object.entries(path).filter(([method]) =>
+          HTTP_METHOD.has(method),
+      ).map(([k, operation]) => operation);
+     ops.forEach(operation => {
+        if (operation.parameters)
+        operation.parameters
+            .filter(isParameterObject)
+            .forEach((param) => param.name = camelCase(param.name))
+      })
+    })
     ctx.initComponents(specs.components);
   }
 

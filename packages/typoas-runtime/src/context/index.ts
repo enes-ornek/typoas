@@ -60,6 +60,7 @@ export class Context<
       this.serializerOptions,
     );
 
+
     if (options.headers) {
       for (const [key, value] of Object.entries(options.headers)) {
         requestContext.setHeaderParam(key, serializeHeader(value));

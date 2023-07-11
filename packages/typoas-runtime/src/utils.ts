@@ -45,6 +45,10 @@ export function serializeHeader(data: unknown): string {
   return anyToString(data);
 }
 
+function camelToSnake(str: string) {
+  return str.replace(/[A-Z]/g, (c) => {return '_' + c.toLowerCase()});
+}
+
 export function applyTemplating(
   val: string,
   variables: Record<string, unknown>,
@@ -52,7 +56,7 @@ export function applyTemplating(
   return Object.entries(variables).reduce(
     (url, [key, v]) =>
       url.replace(
-        new RegExp(`{${key}}`, 'g'),
+        new RegExp(`{${camelToSnake(key)}}`, 'g'),
         encodeURIComponent(anyToString(v)),
       ),
     val,

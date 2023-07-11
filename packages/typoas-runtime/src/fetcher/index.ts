@@ -17,6 +17,7 @@ export class IsomorphicFetchHttpLibrary<T = unknown> implements Fetcher<T> {
     const method = request.getHttpMethod().toString();
     const body = request.getBody();
 
+    debugger;
     const resp = await fetch(request.getUrl(), {
       credentials: 'same-origin',
       headers: request.getHeaders(),
